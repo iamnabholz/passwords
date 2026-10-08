@@ -10,11 +10,6 @@ const substitutions: Record<string, readonly string[]> = {
 	u: ['4']
 };
 
-const prefixes = ['x_', '69_', '69', 'xx', '0', 'no_', '420'] as const;
-const suffixes = ['!', '!!', '#', '_69', '_420', '666', '_lol'] as const;
-const randomAlphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'];
-const randomTailLength = 16;
-
 function randomInt(limit: number): number {
 	const buffer = new Uint32Array(1);
 	// Reject the uneven remainder so every choice has equal probability.
@@ -40,10 +35,6 @@ function censor(word: string): string {
 		letters[index] = pick(substitutions[letters[index]]);
 	}
 	return letters.join('');
-}
-
-function randomTail(): string {
-	return Array.from({ length: randomTailLength }, () => pick(randomAlphabet)).join('');
 }
 
 /**

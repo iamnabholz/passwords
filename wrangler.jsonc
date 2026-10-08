@@ -1,7 +1,7 @@
 {
-	"name": "passwords",
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "password",
 	"compatibility_date": "2026-10-08",
-
 	"assets": {
 		"directory": "./build"
 	}
