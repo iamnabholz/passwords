@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { generatePassword } from '#lib/password.ts';
+	import { playGenerateSound, playCopySound, disposeSounds } from '#lib';
 
 	const badgeMessages = [
 		'VERY SERIOUS SECURITY™',
@@ -52,12 +53,79 @@
 		try {
 			await navigator.clipboard.writeText(password);
 			if (attempt !== copyAttempt) return;
+
 			copied = true;
+			void playCopySound();
+
 			copyTimer = setTimeout(() => (copied = false), 1800);
 		} catch {
 			if (attempt !== copyAttempt) return;
 			copyError = "Couldn't copy. Select the password to copy it manually.";
 		}
+	}
+
+	let generatePressed = $state(false);
+	let copyPressed = $state(false);
+
+	function generateWithSound() {
+		makeItWorse();
+		void playGenerateSound();
+	}
+
+	function handleShortcut(event: KeyboardEvent) {
+		if (
+			!password ||
+			event.defaultPrevented ||
+			event.isComposing ||
+			event.metaKey ||
+			event.ctrlKey ||
+			event.altKey
+		) {
+			return;
+		}
+
+		const target = event.target;
+
+		if (
+			target instanceof HTMLElement &&
+			(target.isContentEditable || target.closest('input, textarea, select, [role="textbox"]'))
+		) {
+			return;
+		}
+
+		if (event.key === ' ') {
+			// Preserve normal Space activation on focused buttons and links.
+			if (
+				target instanceof HTMLElement &&
+				target.closest('button, a[href], summary, [role="button"], [role="link"]')
+			) {
+				return;
+			}
+
+			event.preventDefault();
+
+			if (event.repeat || generatePressed) return;
+
+			generatePressed = true;
+			generateWithSound();
+		} else if (event.key.toLowerCase() === 'c') {
+			event.preventDefault();
+
+			if (event.repeat || copyPressed) return;
+
+			copyPressed = true;
+			void copyPassword();
+		}
+	}
+
+	function releaseShortcut(event: KeyboardEvent) {
+		if (event.key === ' ') generatePressed = false;
+		if (event.key.toLowerCase() === 'c') copyPressed = false;
+	}
+
+	function clearShortcutPresses() {
+		generatePressed = false;
+		copyPressed = false;
 	}
 
 	onMount(() => {
@@ -66,54 +134,12 @@
 		return () => {
 			copyAttempt += 1;
 			clearTimeout(copyTimer);
-
-			if (audioContext && audioContext.state !== 'closed') {
-				void audioContext.close().catch(() => {});
-			}
+			disposeSounds();
 		};
 	});
-
-	let audioContext: AudioContext | undefined;
-
-	async function playGenerateSound() {
-		try {
-			audioContext ??= new AudioContext();
-
-			if (audioContext.state === 'suspended') {
-				await audioContext.resume();
-			}
-
-			const oscillator = audioContext.createOscillator();
-			const volume = audioContext.createGain();
-
-			const now = audioContext.currentTime;
-			const pitch = 300 + Math.random() * 500;
-			const duration = 0.12 + Math.random() * 0.1;
-			const direction = Math.random() < 0.5 ? 0.5 : 1.8;
-
-			oscillator.type = Math.random() < 0.5 ? 'sine' : 'triangle';
-			oscillator.frequency.setValueAtTime(pitch, now);
-			oscillator.frequency.exponentialRampToValueAtTime(pitch * direction, now + duration);
-
-			volume.gain.setValueAtTime(0, now);
-			volume.gain.linearRampToValueAtTime(0.06, now + 0.01);
-			volume.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-			oscillator.connect(volume);
-			volume.connect(audioContext.destination);
-
-			oscillator.onended = () => {
-				oscillator.disconnect();
-				volume.disconnect();
-			};
-
-			oscillator.start(now);
-			oscillator.stop(now + duration);
-		} catch {
-			// Audio being unavailable must not interrupt password generation.
-		}
-	}
 </script>
+
+<svelte:window onkeydown={handleShortcut} onkeyup={releaseShortcut} onblur={clearShortcutPresses} />
 
 <div class="password-app">
 	<div class="symbols" aria-hidden="true">
@@ -188,11 +214,11 @@
 				<div class="actions">
 					<button
 						class="generate"
-						onclick={() => {
-							makeItWorse();
-							void playGenerateSound();
-						}}
+						class:is-pressed={generatePressed}
+						onclick={generateWithSound}
 						disabled={!password}
+						aria-keyshortcuts="Space"
+						title="Generate a new password — Space"
 					>
 						make it worse <span aria-hidden="true"
 							><svg
@@ -207,7 +233,14 @@
 							></span
 						>
 					</button>
-					<button class="copy" onclick={copyPassword} disabled={!password}>
+					<button
+						class="copy"
+						class:is-pressed={copyPressed}
+						onclick={copyPassword}
+						disabled={!password}
+						aria-keyshortcuts="C"
+						title="Copy the password — C"
+					>
 						{copied ? 'copied!' : 'copy'}
 					</button>
 				</div>

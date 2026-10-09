@@ -4,7 +4,15 @@
 @font-face {
 	font-family: 'LT Superior Mono';
 	src: url('/fonts/LTSuperiorMono-Semibold.otf') format('opentype');
-	font-weight: 400;
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'LT Superior Mono';
+	src: url('/fonts/LTSuperiorMono-Bold.otf') format('opentype');
+	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
 }
@@ -78,7 +86,7 @@ p {
 
 a {
 	color: inherit;
-	font-weight: 600;
+	font-weight: 700;
 	overflow-wrap: anywhere;
 	text-decoration: underline;
 	text-decoration-thickness: 0.08rem;
