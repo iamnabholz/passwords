@@ -55,12 +55,7 @@
 		<section class="card" aria-labelledby="title">
 			<span class="badge">VERY SERIOUS SECURITY™</span>
 			<h1 id="title">passwords.</h1>
-			<p class="subtitle">Questionable vocabulary.<br />Better security.</p>
-
-			<p>
-				A funny password generator with questionable vocabulary. Generate a new password, then copy
-				it with one click. Passwords are generated in your browser.
-			</p>
+			<p class="subtitle">A funny password generator with questionable vocabulary.</p>
 
 			<div class="password-display" aria-live="polite" aria-atomic="true">
 				<span class="sr-only">Generated password: </span>
@@ -86,12 +81,12 @@
 		<footer class="card">
 			<p>probably don't use these for your bank. or do, i am not your mom.</p>
 			<p>
-				Designed and developed by
+				designed and developed by
 				<a target="_blank" href="https://nabholz.work">Lukas Nabholz</a>.
 			</p>
 			<p>
-				Keep wacky ideas like this going,
-				<a target="_blank" href="https://buymeacoffee.com/nabholz">Buy Me A Coffee</a>.
+				keep wacky ideas like this going,
+				<a target="_blank" href="https://buymeacoffee.com/nabholz">buy me a coffee</a>.
 			</p>
 		</footer>
 	</main>
