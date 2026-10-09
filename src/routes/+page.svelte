@@ -2,6 +2,31 @@
 	import { onMount } from 'svelte';
 	import { generatePassword } from '#lib/password.ts';
 
+	const badgeMessages = [
+		'VERY SERIOUS SECURITY™',
+		'TRUST ME, BRO™',
+		'MILITARY GRADE NONSENSE',
+		'SECURITY THROUGH BAD WORDS',
+		'PROTECTED BY STRONG VIBES',
+		'YOUR SECRETS, PROBABLY SAFE',
+		'HACKERS HATE THIS NONSENSE',
+		'PASSWORD123 COULD NEVER',
+		'CERTIFIED BY ABSOLUTELY NOBODY',
+		'FORT KNOX FROM TEMU',
+		'PLEASE STOP USING PASSWORD123',
+		'WE TAKE NONSENSE SERIOUSLY',
+		'ENCRYPTED WITH GOOD INTENTIONS',
+		'AUDITED BY MY CAT',
+		'ZERO TRUST, MAXIMUM CONFIDENCE'
+	];
+
+	let badgeText = $state(badgeMessages[0]);
+
+	function changeBadge() {
+		const options = badgeMessages.filter((message) => message !== badgeText);
+		badgeText = options[Math.floor(Math.random() * options.length)];
+	}
+
 	let password = $state('');
 	let copied = $state(false);
 	let copyError = $state('');
@@ -37,82 +62,172 @@
 
 	onMount(() => {
 		makeItWorse();
+
 		return () => {
 			copyAttempt += 1;
 			clearTimeout(copyTimer);
+
+			if (audioContext && audioContext.state !== 'closed') {
+				void audioContext.close().catch(() => {});
+			}
 		};
 	});
+
+	let audioContext: AudioContext | undefined;
+
+	async function playGenerateSound() {
+		try {
+			audioContext ??= new AudioContext();
+
+			if (audioContext.state === 'suspended') {
+				await audioContext.resume();
+			}
+
+			const oscillator = audioContext.createOscillator();
+			const volume = audioContext.createGain();
+
+			const now = audioContext.currentTime;
+			const pitch = 300 + Math.random() * 500;
+			const duration = 0.12 + Math.random() * 0.1;
+			const direction = Math.random() < 0.5 ? 0.5 : 1.8;
+
+			oscillator.type = Math.random() < 0.5 ? 'sine' : 'triangle';
+			oscillator.frequency.setValueAtTime(pitch, now);
+			oscillator.frequency.exponentialRampToValueAtTime(pitch * direction, now + duration);
+
+			volume.gain.setValueAtTime(0, now);
+			volume.gain.linearRampToValueAtTime(0.06, now + 0.01);
+			volume.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+			oscillator.connect(volume);
+			volume.connect(audioContext.destination);
+
+			oscillator.onended = () => {
+				oscillator.disconnect();
+				volume.disconnect();
+			};
+
+			oscillator.start(now);
+			oscillator.stop(now + duration);
+		} catch {
+			// Audio being unavailable must not interrupt password generation.
+		}
+	}
 </script>
 
 <div class="password-app">
 	<div class="symbols" aria-hidden="true">
-		<div class="symbol symbol-hash">#</div>
-		<div class="symbol symbol-at">@</div>
-		<div class="symbol symbol-dollar">$</div>
+		<div class="symbol symbol-hash">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+				><path
+					d="M14 14v-4h-4v4h4Zm7 2h-6v5h-2v-5H9v5H7v-5H3v-2h5v-4H3V8h6V3h2v5h4V3h2v5h4v2h-5v4h5v2Z"
+				/></svg
+			>
+		</div>
+		<div class="symbol symbol-at">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+				><path d="M9 8h6v2H9zm0 6h8v2H9zm-2 0v-4h2v4z" /><path
+					d="M13 14V8h2v6zm4-8h2v8h-2zM7 4h10v2H7zM3 8h2v8H3zm4 10h12v2H7zm-2-2h2v2H5zm14 0h2v2h-2zM5 6h2v2H5z"
+				/></svg
+			>
+		</div>
+		<div class="symbol symbol-dollar">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"
+				><path
+					d="M17 18h-4v4h-2v-4H7v-2h10v2Zm2-2h-2v-3h2v3Zm-2-3H7v-2h10v2ZM7 11H5V8h2v3Zm6-5h4v2H7V6h4V2h2v4Z"
+				/></svg
+			>
+		</div>
 	</div>
 
 	<main class="password-generator">
 		<section class="card" aria-labelledby="title">
-			<span class="badge">VERY SERIOUS SECURITY™</span>
-			<h1 id="title" aria-label="Passwords">
-				<span class="scribbled-letter"
-					>p<svg
-						class="letter-scribble"
-						viewBox="0 0 100 140"
-						preserveAspectRatio="none"
-						aria-hidden="true"
-						focusable="false"
-					>
-						<path
-							d="
+			<span>
+				<button
+					type="button"
+					class="badge"
+					onclick={changeBadge}
+					title="Click for another very serious security claim"
+				>
+					<span aria-live="polite" aria-atomic="true">{badgeText}</span>
+				</button>
+
+				<h1 id="title" aria-label="Passwords">
+					<span class="scribbled-letter"
+						>p<svg
+							class="letter-scribble"
+							viewBox="0 0 100 140"
+							preserveAspectRatio="none"
+							aria-hidden="true"
+							focusable="false"
+						>
+							<path
+								d="
 								M12 40 Q45 28 86 38
 								L14 54 L88 47
 								L10 69 L91 58
 								L12 84 L88 72
 								L9 98 L91 86
-								L15 112 L85 101
-								L22 126 L79 115
-								M24 34 Q10 78 30 126
-								M48 32 Q37 80 54 128
-								M73 34 Q59 80 76 122
+								L48 110
 							"
-						/>
-					</svg></span
-				>asswords.
-			</h1>
-			<p class="subtitle">A funny password generator with questionable vocabulary.</p>
+							/>
+						</svg></span
+					>asswords.
+				</h1>
+				<p class="subtitle">a funny password generator with questionable vocabulary.</p>
+			</span>
 
-			<div class="password-display" aria-live="polite" aria-atomic="true">
-				<span class="sr-only">Generated password: </span>
-				{#key password}
-					<span class="password">{password || 'censoring…'}</span>
-				{/key}
-			</div>
+			<span class="password-section">
+				<div class="password-display" aria-live="polite" aria-atomic="true">
+					<span class="sr-only">Generated password: </span>
+					{#key password}
+						<span class="password">{password || 'censoring…'}</span>
+					{/key}
+				</div>
 
-			<div class="actions">
-				<button class="generate" onclick={makeItWorse} disabled={!password}>
-					make it worse <span aria-hidden="true">↻</span>
-				</button>
-				<button class="copy" onclick={copyPassword} disabled={!password}>
-					{copied ? 'copied!' : 'copy'}
-				</button>
-			</div>
-			<p class="sr-only" role="status">{copied ? 'Password copied to clipboard.' : ''}</p>
-			{#if copyError}
-				<p class="copy-error" role="alert">{copyError}</p>
-			{/if}
+				<div class="actions">
+					<button
+						class="generate"
+						onclick={() => {
+							makeItWorse();
+							void playGenerateSound();
+						}}
+						disabled={!password}
+					>
+						make it worse <span aria-hidden="true"
+							><svg
+								height="24"
+								width="24"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="currentColor"
+								viewBox="0 0 24 24"
+								><path
+									d="M13 20H9V18H13V20ZM19 16H21V18H19V20H17V18H15V16H17V8H19V16ZM9 18H7V16H9V18ZM7 6H9V8H7V16H5V8H3V6H5V4H7V6ZM15 16H13V14H15V16ZM23 16H21V14H23V16ZM3 10H1V8H3V10ZM11 10H9V8H11V10ZM17 8H15V6H17V8ZM15 6H11V4H15V6Z"
+								/></svg
+							></span
+						>
+					</button>
+					<button class="copy" onclick={copyPassword} disabled={!password}>
+						{copied ? 'copied!' : 'copy'}
+					</button>
+				</div>
+				<p class="sr-only" role="status">{copied ? 'Password copied to clipboard.' : ''}</p>
+				{#if copyError}
+					<p class="copy-error" role="alert">{copyError}</p>
+				{/if}
+			</span>
+
+			<footer>
+				<p>probably don't use these for your bank.</p>
+				<p>
+					designed and developed by
+					<a target="_blank" href="https://nabholz.work">Lukas Nabholz</a>.
+				</p>
+				<p>
+					<a target="_blank" href="https://buymeacoffee.com/nabholz">buy me a coffee</a>.
+					<a target="_blank" href="https://github.com/iamnabholz/bad-password">open source</a>.
+				</p>
+			</footer>
 		</section>
-
-		<footer class="card">
-			<p>probably don't use these for your bank.</p>
-			<p>
-				designed and developed by
-				<a target="_blank" href="https://nabholz.work">Lukas Nabholz</a>.
-			</p>
-			<p>
-				keep wacky ideas like this going,
-				<a target="_blank" href="https://buymeacoffee.com/nabholz">buy me a coffee</a>.
-			</p>
-		</footer>
 	</main>
 </div>

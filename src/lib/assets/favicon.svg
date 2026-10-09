@@ -1,11 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-	<title>Passwords</title>
-	<rect width="512" height="512" rx="96" fill="#ffb900" />
-	<path
-		d="M208 128 160 384 M352 128 304 384 M128 208H392 M112 304H376"
-		fill="none"
-		stroke="#111"
-		stroke-width="40"
-		stroke-linecap="round"
-	/>
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:affinity="https://www.affinity.studio/"
+	xml:space="preserve"
+	fill-rule="evenodd"
+	stroke-linejoin="round"
+	stroke-miterlimit="2"
+	clip-rule="evenodd"
+	viewBox="0 0 32 32"
+>
+	<path fill="none" d="M0 0h32v32H0z" />
+	<clipPath id="a">
+		<path affinity:id="icon" d="M0 0h32v32H0z" />
+	</clipPath>
+	<g clip-path="url(#a)">
+		<path fill="#fdc800" d="M-1-1h34v34H-1z" />
+		<path
+			fill="#111"
+			fill-rule="nonzero"
+			d="M18.5 18.5v-4h-4v4zm7 2h-6v5h-2v-5h-4v5h-2v-5h-4v-2h5v-4h-5v-2h6v-5h2v5h4v-5h2v5h4v2h-5v4h5z"
+		/>
+		<path
+			fill="#fd92e4"
+			fill-rule="nonzero"
+			d="M17.5 17.5v-4h-4v4zm7 2h-6v5h-2v-5h-4v5h-2v-5h-4v-2h5v-4h-5v-2h6v-5h2v5h4v-5h2v5h4v2h-5v4h5z"
+		/>
+	</g>
 </svg>

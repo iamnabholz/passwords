@@ -1,249 +1,106 @@
 @import './reset.css';
 @import './password.css';
 
+@font-face {
+	font-family: 'LT Superior Mono';
+	src: url('/fonts/LTSuperiorMono-Semibold.otf') format('opentype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 :root {
 	color-scheme: light;
 
-	/* Keep the playful palette consistent regardless of the system theme. */
-	--color-text-black: #111;
-	--color-text-white: #fff8e8;
-	--color-background-light: #fdc800;
-	--color-background: var(--color-background-light);
-	--color-surface-card: var(--color-text-white);
-	--color-surface-password: var(--color-text-black);
-	--color-text: var(--color-text-black);
-	--color-text-faint: #686257;
-	--color-border: var(--color-text-black);
+	/* Colors */
+	--color-text: #111;
+	--color-background: #fdc800;
+	--color-surface: #fff8e8;
+	--color-muted: #686257;
 	--color-accent: #1f9f94;
-	--color-accent-secondary: #fd92e4;
-	accent-color: var(--color-accent);
+	--color-secondary: #fd92e4;
 
-	--color-link: var(--color-accent);
+	/* Typography */
+	--font-body: 'LT Superior Mono', ui-monospace, SFMono-Regular, monospace;
 
-	/* Font families */
-	--font-family-sans: system-ui, sans-serif;
-	--font-family-mono:
-		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+	--font-heading: system-ui, sans-serif;
 
-	/* Font sizes */
-	--font-size-2xs: 0.625rem;
-	--font-size-xs: 0.75rem;
-	--font-size-caption: 0.8125rem;
-	--font-size-sm: 0.875rem;
 	--font-size-base: 1rem;
-	--font-size-lg: 1.125rem;
-	--font-size-xl: 1.5rem;
-	--font-size-2xl: 2rem;
-	--font-size-3xl: 2.75rem;
-	--font-size-4xl: 4rem;
-	--font-size-5xl: 6rem;
+	--font-size-small: 0.875rem;
+	--font-size-caption: 0.8125rem;
+	--font-size-tiny: 0.75rem;
+	--line-height: 1.6;
 
-	--font-size-title: clamp(3rem, 10vw, 5rem);
-	--font-size-title-compact: clamp(2.7rem, 13vw, 3.25rem);
-	--font-size-display: clamp(1.25rem, 5vw, 1.75rem);
-	--font-size-icon: 1.375rem;
-	--font-size-symbol-hash: clamp(13.75rem, 34vw, 27.5rem);
-	--font-size-symbol-at: clamp(16.25rem, 36vw, 28.75rem);
-	--font-size-symbol-dollar: clamp(5.9375rem, 11vw, 9.375rem);
-	--font-size-site-title: clamp(2rem, 1.2rem + 3.4vw, 5.75rem);
-	--font-size-introduction: clamp(2rem, 1.2rem + 3.4vw, 5.75rem);
-
-	--text-indent-introduction: clamp(1rem, 4vw, 4rem);
-
-	/* Font weights */
-	--font-weight-normal: 400;
-	--font-weight-semibold: 600;
-	--font-weight-bold: 800;
-	--font-weight-black: 900;
-
-	/* Line heights */
-	--line-height-none: 1;
-	--line-height-display: 0.9;
-	--line-height-icon: 0.7;
-	--line-height-subtitle: 1.7;
-	--line-height-tight: 1.2;
-	--line-height-snug: 1.4;
-	--line-height-normal: 1.6;
-	--line-height-relaxed: 1.8;
-
-	/* Letter spacing */
-	--letter-spacing-display: -0.075em;
-	--letter-spacing-tight: -0.03em;
-	--letter-spacing-normal: 0;
-	--letter-spacing-wide: 0.035em;
-
-	/* Spacing — 4px-based scale */
-	--spacing-2xs: 0.25rem;
-	--spacing-xs: 0.5rem;
-	--spacing-sm: 0.75rem;
-	--spacing-md: 1rem;
-	--spacing-lg: 1.5rem;
+	/* Shared spacing and layout */
+	--spacing-small: 0.5rem;
+	--spacing-medium: 1rem;
+	--spacing-large: 1.5rem;
 	--spacing-xl: 2rem;
-	--spacing-2xl: 2.5rem;
-	--spacing-3xl: 3rem;
-	--spacing-4xl: 4rem;
-	--spacing-5xl: 6rem;
+	--card-width: 32.5rem;
 
-	/* Shared layout measurements */
-	--max-width-page: 120rem;
-	--max-width-reading: 32.5rem;
-	--max-width-card: var(--max-width-reading);
+	--spacing-card-padding: clamp(1rem, 0.5rem + 3vw, 2.5rem);
+	--spacing-gap: clamp(0.75rem, 0.5rem + 1.5vw, 1.5rem);
 
-	--padding-inline-page: var(--spacing-lg);
-	--padding-block-page: var(--spacing-3xl);
-	--padding-card: calc(var(--spacing-xl));
-	--spacing-stack: var(--spacing-xl);
+	/* Borders and corners */
+	--border-width: 2px;
+	--border-width-heavy: 3px;
+	--radius-small: 0.75rem;
+	--radius-medium: 1rem;
+	--radius-large: 1.75rem;
 
-	--inset-site-header: clamp(0rem, 2vw, var(--spacing-xl));
-
-	--spacing-section: clamp(var(--spacing-4xl), 8vw, var(--spacing-5xl));
-
-	/* Borders */
-	--border-width-thin: 1px;
-	--border-width-medium: 2px;
-	--border-width-thick: 3px;
-
-	--border-radius-xs: 0.125rem;
-	--border-radius-sm: 0.25rem;
-	--border-radius-md: 0.75rem;
-	--border-radius-lg: 1rem;
-	--border-radius-xl: 1.75rem;
-	--border-radius-full: 9999px;
-
-	/* Link decoration */
-	--text-decoration-thickness-link: 0.08rem;
-	--text-underline-offset-link: 0.24em;
-
-	/* Focus */
-	--outline-width-focus: var(--border-width-thick);
-	--outline-offset-focus: 0.375rem;
+	/* Shadows */
+	--shadow-offset: 4px;
+	--shadow-small: var(--shadow-offset) var(--shadow-offset) 0 var(--color-text);
+	--shadow-large: 9px 9px 0 var(--color-text);
+	--shadow-hover: calc(var(--shadow-offset) + 1px) calc(var(--shadow-offset) + 1px) 0
+		var(--color-text);
 
 	/* Transitions */
-	--transition-duration-fast: 100ms;
-	--transition-duration-base: 250ms;
-	--transition-duration-slow: 400ms;
-
-	--transition-timing-standard: cubic-bezier(0.4, 0, 0.2, 1);
-	--transition-timing-out: cubic-bezier(0, 0, 0.2, 1);
-
-	/* Animations */
-	--animation-duration-slow: 600ms;
-	--animation-delay-short: 200ms;
-	--animation-timing-out: cubic-bezier(0.16, 1, 0.3, 1);
-
-	/* Hard offset shadows share measurements with the button press movement. */
-	--shadow-offset-button: var(--spacing-2xs);
-	--shadow-offset-card: 0.5625rem;
-	--shadow-offset-hover: calc(var(--shadow-offset-button) + var(--border-width-thin));
-	--box-shadow-sm: var(--shadow-offset-button) var(--shadow-offset-button) 0 var(--color-border);
-	--box-shadow-md: var(--shadow-offset-card) var(--shadow-offset-card) 0 var(--color-border);
-	--box-shadow-hover: var(--shadow-offset-hover) var(--shadow-offset-hover) 0 var(--color-border);
-	--box-shadow-pressed: 0 0 0 var(--color-border);
-	--text-shadow-symbol: var(--box-shadow-sm);
-
-	/* Component measurements not covered by the shared spacing scale. */
-	--min-height-password: 6.5625rem;
-	--min-height-button: 3.3125rem;
-	--min-width-copy: 6.3125rem;
-	--min-width-copy-compact: 5.125rem;
-	--opacity-disabled: 0.6;
-	--rotation-card: -0.5deg;
-	--rotation-badge: -8deg;
-	--rotation-symbol-hash: -15deg;
-	--rotation-symbol-at: 12deg;
-	--rotation-symbol-dollar: 15deg;
-	--inset-symbol-hash-block: calc(-1 * var(--spacing-2xl));
-	--inset-symbol-hash-inline: -1.5625rem;
-	--inset-symbol-at-inline: -4.0625rem;
-	--inset-symbol-at-block: -4.6875rem;
-	--inset-symbol-dollar: 12%;
-	--icon-baseline-offset: -0.125rem;
-
-	/* Separate long-running decoration from quick interaction feedback. */
-	--animation-duration-password: 160ms;
-	--animation-distance-password: var(--border-width-thick);
-	--animation-duration-symbol-hash: 32s;
-	--animation-duration-symbol-at: 40s;
-	--animation-duration-symbol-dollar: 28s;
-	--animation-delay-symbol-hash: -11s;
-	--animation-delay-symbol-at: -25s;
-	--animation-delay-symbol-dollar: -7s;
-	--animation-timing-float: ease-in-out;
-	--animation-distance-symbol-inline: clamp(var(--spacing-md), 6vw, var(--spacing-5xl));
-	--animation-distance-symbol-block: clamp(var(--spacing-md), 4vw, var(--spacing-4xl));
-	--animation-rotation-symbol: 8deg;
+	--transition-fast: 100ms;
+	--transition-normal: 250ms;
 }
 
-/* Base elements */
 html {
-	font-size: 100%;
-	scroll-behavior: smooth;
+	font-size: var(--font-size-base);
 }
 
 body {
-	background-color: var(--color-background);
+	background: var(--color-background);
 	color: var(--color-text);
-	font-family: var(--font-family-mono);
-	font-size: var(--font-size-base);
-	font-weight: var(--font-weight-normal);
-	font-optical-sizing: auto;
-	line-height: var(--line-height-normal);
-
-	transition:
-		background-color var(--transition-duration-base) var(--transition-timing-standard),
-		color var(--transition-duration-base) var(--transition-timing-standard);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: var(--font-family-sans);
-	font-size: inherit;
-	font-weight: var(--font-weight-semibold);
-	line-height: var(--line-height-tight);
-	font-variant-numeric: lining-nums;
-	text-wrap: balance;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	line-height: var(--line-height);
 }
 
 p {
-	line-height: inherit;
 	text-wrap: pretty;
 }
 
-::selection {
-	background-color: var(--color-accent-secondary);
-	color: var(--color-text-black);
-}
-
-/* Links */
 a {
-	font-weight: var(--font-weight-semibold);
+	color: inherit;
+	font-weight: 600;
 	overflow-wrap: anywhere;
-	text-decoration-thickness: var(--text-decoration-thickness-link);
-	text-underline-offset: var(--text-underline-offset-link);
+	text-decoration: underline;
+	text-decoration-thickness: 0.08rem;
+	text-underline-offset: 0.24em;
 	text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
 	transition:
-		color var(--transition-duration-base) var(--transition-timing-out),
-		text-decoration-color var(--transition-duration-base) var(--transition-timing-out);
+		color var(--transition-normal) ease-out,
+		text-decoration-color var(--transition-normal) ease-out;
 }
 
 a:is(:hover, :active, :focus-visible) {
-	color: var(--color-link);
-	text-decoration-color: var(--color-link);
+	color: var(--color-accent);
+	text-decoration-color: currentColor;
 }
 
-/* Reduce motion in the shared styles owned by this file. */
-@media (prefers-reduced-motion: reduce) {
-	html {
-		scroll-behavior: auto;
-	}
+::selection {
+	background: var(--color-secondary);
+	color: var(--color-text);
+}
 
-	body,
-	a,
-	a[href^='http']::after {
+@media (prefers-reduced-motion: reduce) {
+	a {
 		transition: none;
 	}
 }
