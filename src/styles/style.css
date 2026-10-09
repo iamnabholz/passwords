@@ -7,15 +7,15 @@
 	/* Keep the playful palette consistent regardless of the system theme. */
 	--color-text-black: #111;
 	--color-text-white: #fff8e8;
-	--color-background-light: #ffb900;
+	--color-background-light: #FDC800;
 	--color-background: var(--color-background-light);
 	--color-surface-card: var(--color-text-white);
 	--color-surface-password: var(--color-text-black);
 	--color-text: var(--color-text-black);
 	--color-text-faint: #686257;
 	--color-border: var(--color-text-black);
-	--color-accent: #007dcc;
-	--color-accent-secondary: #d10056;
+	--color-accent: #1F9F94;
+	--color-accent-secondary: #FD92E4;
 	accent-color: var(--color-accent);
 
 	--color-link: var(--color-accent);
