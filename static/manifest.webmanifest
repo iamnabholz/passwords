@@ -1,15 +1,15 @@
 {
 	"id": "/",
-	"name": "Passwords — Funny Password Generator",
-	"short_name": "Passwords",
+	"name": "Passwords — Questionable Password Generator",
+	"short_name": "#asswords",
 	"description": "Generate ridiculous passwords from questionable vocabulary, right in your browser.",
 	"lang": "en",
 	"dir": "ltr",
 	"start_url": "/",
 	"scope": "/",
 	"display": "standalone",
-	"background_color": "#ffb900",
-	"theme_color": "#ffb900",
+	"background_color": "#fdc800",
+	"theme_color": "#fdc800",
 	"icons": [
 		{
 			"src": "/icons/icon-192.png",

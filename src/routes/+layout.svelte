@@ -7,13 +7,13 @@
 
 	const siteName = 'Passwords';
 	const siteUrl = 'https://passwords.nabholz.work/';
-	const title = 'Passwords — Funny Password Generator';
+	const title = 'Passwords — Questionable Password Generator';
 	const description =
 		'Generate ridiculous passwords from questionable vocabulary. Create and copy a new password instantly, right in your browser.';
 
 	const socialImage = new URL('social-preview.png', siteUrl).href;
 	const socialImageAlt =
-		'Passwords: a black hash logo on orange, with the tagline Questionable vocabulary. Ridiculous passwords.';
+		'Passwords: a pink hash logo on cyan, with the tagline A funny password generator. Made by Lukas Nabholz.';
 </script>
 
 <svelte:head>
@@ -23,16 +23,12 @@
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<link rel="canonical" href={siteUrl} />
 
-	<meta name="theme-color" content="#ffb900" />
+	<meta name="theme-color" content="#fdc800" />
 	<meta name="color-scheme" content="light" />
 
 	<link rel="icon" type="image/svg+xml" href={favicon} />
 	<link rel="manifest" href="/manifest.webmanifest" />
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-title" content="Passwords" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content={siteName} />

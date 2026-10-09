@@ -7,15 +7,15 @@
 	/* Keep the playful palette consistent regardless of the system theme. */
 	--color-text-black: #111;
 	--color-text-white: #fff8e8;
-	--color-background-light: #FDC800;
+	--color-background-light: #fdc800;
 	--color-background: var(--color-background-light);
 	--color-surface-card: var(--color-text-white);
 	--color-surface-password: var(--color-text-black);
 	--color-text: var(--color-text-black);
 	--color-text-faint: #686257;
 	--color-border: var(--color-text-black);
-	--color-accent: #1F9F94;
-	--color-accent-secondary: #FD92E4;
+	--color-accent: #1f9f94;
+	--color-accent-secondary: #fd92e4;
 	accent-color: var(--color-accent);
 
 	--color-link: var(--color-accent);
@@ -38,7 +38,7 @@
 	--font-size-4xl: 4rem;
 	--font-size-5xl: 6rem;
 
-	--font-size-title: clamp(3.25rem, 11.5vw, 5.3rem);
+	--font-size-title: clamp(3rem, 10vw, 5rem);
 	--font-size-title-compact: clamp(2.7rem, 13vw, 3.25rem);
 	--font-size-display: clamp(1.25rem, 5vw, 1.75rem);
 	--font-size-icon: 1.375rem;
@@ -91,7 +91,7 @@
 
 	--padding-inline-page: var(--spacing-lg);
 	--padding-block-page: var(--spacing-3xl);
-	--padding-card: calc(var(--spacing-xl) + var(--spacing-2xs));
+	--padding-card: calc(var(--spacing-xl));
 	--spacing-stack: var(--spacing-xl);
 
 	--inset-site-header: clamp(0rem, 2vw, var(--spacing-xl));
