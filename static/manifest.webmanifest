@@ -1,0 +1,33 @@
+{
+	"id": "/",
+	"name": "Passwords — Funny Password Generator",
+	"short_name": "Passwords",
+	"description": "Generate ridiculous passwords from questionable vocabulary, right in your browser.",
+	"lang": "en",
+	"dir": "ltr",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#ffb900",
+	"theme_color": "#ffb900",
+	"icons": [
+		{
+			"src": "/icons/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/icons/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/icons/icon-maskable-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
+}
