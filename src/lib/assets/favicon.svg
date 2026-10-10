@@ -9,7 +9,7 @@
 >
 	<path fill="none" d="M0 0h32v32H0z" />
 	<clipPath id="a">
-		<path affinity:id="icon" d="M0 0h32v32H0z" />
+		<path d="M0 0h32v32H0z" />
 	</clipPath>
 	<g clip-path="url(#a)">
 		<path

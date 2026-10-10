@@ -36,6 +36,12 @@ worker.addEventListener('install', (event) => {
 	// The new worker activates after the old version's tabs/windows close.
 });
 
+worker.addEventListener('message', (event) => {
+	if (event.data?.type === 'SKIP_WAITING') {
+		event.waitUntil(worker.skipWaiting());
+	}
+});
+
 worker.addEventListener('activate', (event) => {
 	event.waitUntil(
 		(async () => {
@@ -46,6 +52,8 @@ worker.addEventListener('activate', (event) => {
 					.filter((name) => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
 					.map((name) => caches.delete(name))
 			);
+
+			await worker.clients.claim();
 		})()
 	);
 });
