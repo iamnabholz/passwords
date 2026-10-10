@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { playGenerateSound, playCopySound, disposeSounds } from '#lib/sounds.ts';
+	import { playSound, disposeSounds } from '#lib/sounds.ts';
 	import { generatePassword, type PasswordLevel } from '#lib/password.ts';
+	import { version } from '../../../package.json';
 
 	let password = $state('');
 	let level = $state<PasswordLevel>(1);
-	let wordCount = $state(2);
 
 	const tierJokes: Record<PasswordLevel, string> = {
 		1: 'SECURITY BY VIBES',
@@ -30,7 +30,6 @@
 
 		password = next.password;
 		level = next.level;
-		wordCount = next.wordCount;
 
 		copyAttempt += 1;
 		clearTimeout(copyTimer);
@@ -40,7 +39,7 @@
 
 	function generateWithSound() {
 		makeItWorse();
-		void playGenerateSound();
+		void playSound('generate');
 	}
 
 	async function copyPassword() {
@@ -56,7 +55,7 @@
 			if (attempt !== copyAttempt) return;
 
 			copied = true;
-			void playCopySound();
+			void playSound('action');
 
 			copyTimer = setTimeout(() => (copied = false), 1800);
 		} catch {
@@ -139,9 +138,19 @@
 	<div class="password-display" aria-live="polite" aria-atomic="true">
 		{#if password}
 			<div class="password-level">
-				<span>Level {level} · {wordCount} words</span>
-				<span>{tierJokes[level]}</span>
+				<div class="tiny">{tierJokes[level]} / {version}</div>
+
+				<div class="segments" id="segments" aria-hidden="true">
+					<i class="segment" class:on={level > 0}></i>
+					<i class="segment" class:on={level > 1}></i>
+					<i class="segment" class:on={level > 2}></i>
+				</div>
 			</div>
+
+			<!--	<div class="password-level">
+				<span>GENERATOR v0.1 · {wordCount} words</span>
+				<span>{tierJokes[level]}</span>
+				</div>-->
 		{/if}
 
 		<span class="sr-only">Generated password: </span>
@@ -205,11 +214,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--spacing-medium);
-		min-height: 8rem;
-		padding: var(--spacing-large);
+		padding: var(--spacing-medium);
 		background: var(--color-text);
 		color: var(--color-surface);
 		border-radius: var(--radius-medium);
+		text-box: cap alphabetical;
 	}
 
 	.password {
@@ -226,11 +235,26 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		flex-wrap: wrap;
 		gap: var(--spacing-small);
-		font-size: var(--font-size-caption);
+		font-size: var(--font-size-tiny);
 		line-height: 1.4;
 		text-transform: uppercase;
+	}
+
+	.segments {
+		display: flex;
+		gap: 6px;
+		align-items: center;
+	}
+	.segment {
+		width: 14px;
+		height: 6px;
+		border-radius: 2px;
+		background: var(--color-muted);
+		transition: background 0.15s;
+	}
+	.segment.on {
+		background: var(--color-secondary);
 	}
 
 	.password::selection {

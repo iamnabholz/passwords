@@ -32,10 +32,12 @@
 
 	--font-heading: system-ui, sans-serif;
 
-	--font-size-base: 1rem;
-	--font-size-small: 0.875rem;
-	--font-size-caption: 0.8125rem;
 	--font-size-tiny: 0.75rem;
+	--font-size-small: 0.875rem;
+	--font-size-base: 1rem;
+	--font-size-caption: 0.8125rem;
+
+	--line-height-tight: 1;
 	--line-height: 1.6;
 
 	/* Shared spacing and layout */

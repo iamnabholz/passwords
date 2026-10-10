@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { version } from '../../package.json';
 	import BackgroundSymbols from '#lib/components/BackgroundSymbols.svelte';
 	import SecurityBadge from '#lib/components/SecurityBadge.svelte';
 	import PasswordGenerator from '#lib/components/PasswordGenerator.svelte';
+	import MessageBubble from '#lib/components/MessageBubble.svelte';
 </script>
 
 <div class="password-app">
@@ -36,10 +36,6 @@
 							</svg></span
 						>asswords.
 					</h1>
-
-					<span class="version" aria-label={`Version ${version}`}>
-						{version}
-					</span>
 				</div>
 
 				<p class="subtitle">a funny password generator with questionable vocabulary.</p>
@@ -48,7 +44,7 @@
 			<PasswordGenerator />
 
 			<footer>
-				<p>probably don't use these for your bank.</p>
+				<MessageBubble />
 
 				<p>
 					designed and developed by
@@ -112,12 +108,6 @@
 		letter-spacing: -0.075em;
 	}
 
-	.version {
-		font-size: var(--font-size-small);
-		letter-spacing: -0.08rem;
-		color: var(--color-muted);
-	}
-
 	.scribbled-letter {
 		position: relative;
 		display: inline-block;
@@ -146,7 +136,7 @@
 		line-height: 1.4;
 	}
 
-	footer {
+	footer p {
 		color: var(--color-muted);
 		text-align: center;
 		font-size: var(--font-size-caption);

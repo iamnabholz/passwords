@@ -117,9 +117,9 @@ export type GeneratedPassword = {
 };
 
 const levels = [
-	{ level: 1, wordCount: 2 },
-	{ level: 2, wordCount: 4 },
-	{ level: 3, wordCount: 8 }
+	{ level: 1, wordCount: 2 }
+	//{ level: 2, wordCount: 4 },
+	//{ level: 3, wordCount: 8 }
 ] as const;
 
 export function generatePassword(): GeneratedPassword {

@@ -1,16 +1,70 @@
 const SOUND_VOLUME = 0.08;
 
-const soundPatterns = [
+type SoundEffect = 'generate' | 'action' | 'beep';
+
+type Note = {
+	pitch: number;
+	start: number;
+	duration: number;
+	wave: OscillatorType;
+	level: number;
+	lowpass?: number;
+};
+
+const ACTION_PATTERNS = [
 	[329.63, 493.88],
 	[392, 523.25],
 	[440, 659.25],
 	[523.25, 392]
 ];
 
-let audioContext: AudioContext | undefined;
-let lastPattern = -1;
+const GENERATE_NOTES: Note[] = [360, 240, 470].map((pitch, index) => ({
+	pitch,
+	start: [0, 0.055, 0.12][index],
+	duration: 0.05,
+	wave: 'square',
+	level: 0.56
+}));
 
-export async function playGenerateSound() {
+const BEEP_NOTES: Note[] = [
+	{
+		pitch: 880,
+		start: 0,
+		duration: 0.07,
+		wave: 'sine',
+		level: 0.7
+	}
+];
+
+let audioContext: AudioContext | undefined;
+let lastActionPattern = -1;
+
+function randomBetween(min: number, max: number) {
+	return min + Math.random() * (max - min);
+}
+
+function getNotes(effect: SoundEffect): Note[] {
+	if (effect === 'generate') return GENERATE_NOTES;
+	if (effect === 'beep') return BEEP_NOTES;
+
+	const choices = ACTION_PATTERNS.map((_, index) => index).filter(
+		(index) => index !== lastActionPattern
+	);
+
+	const choice = choices[Math.floor(Math.random() * choices.length)];
+	lastActionPattern = choice;
+
+	return ACTION_PATTERNS[choice].map((pitch, index) => ({
+		pitch,
+		start: index * 0.035,
+		duration: 0.05,
+		wave: index === 0 ? 'square' : 'triangle',
+		level: index === 0 ? 0.65 : 1,
+		lowpass: 1800
+	}));
+}
+
+export async function playSound(effect: SoundEffect) {
 	if (typeof window === 'undefined') return;
 
 	try {
@@ -26,101 +80,60 @@ export async function playGenerateSound() {
 
 		if (context !== audioContext || context.state !== 'running') return;
 
-		const choices = soundPatterns.map((_, index) => index).filter((index) => index !== lastPattern);
-
-		const choice = choices[Math.floor(Math.random() * choices.length)];
-		lastPattern = choice;
-
+		// Vary the whole effect together so the notes retain their character.
+		const detune = randomBetween(-6, 6);
+		const volumeScale = randomBetween(0.95, 1.05);
+		const timingScale = randomBetween(0.97, 1.03);
 		const now = context.currentTime;
-		const detune = Math.random() * 12 - 6;
 
-		soundPatterns[choice].forEach((pitch, index) => {
-			const start = now + index * 0.035;
-			const duration = 0.05;
+		for (const note of getNotes(effect)) {
+			const start = now + note.start * timingScale;
+			const duration = note.duration * timingScale;
+			const level = SOUND_VOLUME * note.level * volumeScale;
 
 			const oscillator = context.createOscillator();
-			const filter = context.createBiquadFilter();
-			const volume = context.createGain();
+			const gain = context.createGain();
+			const filter = note.lowpass ? context.createBiquadFilter() : undefined;
 
-			oscillator.type = index === 0 ? 'square' : 'triangle';
-			oscillator.frequency.value = pitch;
+			oscillator.type = note.wave;
+			oscillator.frequency.value = note.pitch;
 			oscillator.detune.value = detune;
 
-			// Keep the retro edge without the harsh high frequencies.
-			filter.type = 'lowpass';
-			filter.frequency.value = 1800;
-			filter.Q.value = 0.5;
+			gain.gain.setValueAtTime(0, start);
+			gain.gain.linearRampToValueAtTime(level, start + 0.003);
+			gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
 
-			const level = SOUND_VOLUME * (index === 0 ? 0.65 : 1);
+			if (filter) {
+				filter.type = 'lowpass';
+				filter.frequency.value = note.lowpass!;
+				filter.Q.value = 0.5;
 
-			volume.gain.setValueAtTime(0, start);
-			volume.gain.linearRampToValueAtTime(level, start + 0.003);
-			volume.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+				oscillator.connect(filter);
+				filter.connect(gain);
+			} else {
+				oscillator.connect(gain);
+			}
 
-			oscillator.connect(filter);
-			filter.connect(volume);
-			volume.connect(context.destination);
+			gain.connect(context.destination);
 
 			oscillator.onended = () => {
 				oscillator.disconnect();
-				filter.disconnect();
-				volume.disconnect();
+				filter?.disconnect();
+				gain.disconnect();
 			};
 
 			oscillator.start(start);
 			oscillator.stop(start + duration);
-		});
-	} catch {
-		// Audio being unavailable must not interrupt the app.
-	}
-}
-
-export async function playCopySound() {
-	if (typeof window === 'undefined') return;
-
-	try {
-		if (!audioContext || audioContext.state === 'closed') {
-			audioContext = new AudioContext();
 		}
-
-		const context = audioContext;
-
-		if (context.state !== 'running') {
-			await context.resume();
-		}
-
-		if (context !== audioContext || context.state !== 'running') return;
-
-		const now = context.currentTime;
-		const oscillator = context.createOscillator();
-		const volume = context.createGain();
-
-		oscillator.type = 'sine';
-		oscillator.frequency.value = 880;
-
-		volume.gain.setValueAtTime(0, now);
-		volume.gain.linearRampToValueAtTime(SOUND_VOLUME * 0.7, now + 0.004);
-		volume.gain.exponentialRampToValueAtTime(0.0001, now + 0.07);
-
-		oscillator.connect(volume);
-		volume.connect(context.destination);
-
-		oscillator.onended = () => {
-			oscillator.disconnect();
-			volume.disconnect();
-		};
-
-		oscillator.start(now);
-		oscillator.stop(now + 0.07);
 	} catch {
-		// Sound is optional.
+		// Optional audio must never interrupt the app.
 	}
 }
 
 export function disposeSounds() {
 	const context = audioContext;
 	audioContext = undefined;
-	lastPattern = -1;
+	lastActionPattern = -1;
 
 	if (context && context.state !== 'closed') {
 		void context.close().catch(() => {});

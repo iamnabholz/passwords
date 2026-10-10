@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { playSound, disposeSounds } from '#lib/sounds.ts';
 
 	const messages = [
 		'VERY SERIOUS SECURITY™',
@@ -24,10 +25,15 @@
 	function changeMessage() {
 		const options = messages.filter((message) => message !== text);
 		text = options[Math.floor(Math.random() * options.length)];
+		void playSound('action');
 	}
 
 	onMount(() => {
 		text = messages[Math.floor(Math.random() * messages.length)];
+
+		return () => {
+			disposeSounds();
+		};
 	});
 </script>
 
