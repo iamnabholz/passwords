@@ -1,6 +1,6 @@
 const SOUND_VOLUME = 0.08;
 
-type SoundEffect = 'generate' | 'action' | 'beep';
+type SoundEffect = 'generate' | 'action' | 'beep' | 'print';
 
 type Note = {
 	pitch: number;
@@ -46,6 +46,21 @@ function randomBetween(min: number, max: number) {
 function getNotes(effect: SoundEffect): Note[] {
 	if (effect === 'generate') return GENERATE_NOTES;
 	if (effect === 'beep') return BEEP_NOTES;
+
+	if (effect === 'print') {
+		return Array.from({ length: 25 }, (_, index): Note => {
+			const accented = index % 5 === 0;
+
+			return {
+				pitch: (index % 2 === 0 ? 180 : 320) + randomBetween(-20, 20),
+				start: index * 0.04 + randomBetween(0, 0.006),
+				duration: accented ? 0.025 : 0.015,
+				wave: 'square',
+				level: accented ? 0.4 : randomBetween(0.2, 0.3),
+				lowpass: 1400
+			};
+		});
+	}
 
 	const choices = ACTION_PATTERNS.map((_, index) => index).filter(
 		(index) => index !== lastActionPattern

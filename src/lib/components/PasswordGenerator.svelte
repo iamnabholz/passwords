@@ -138,13 +138,15 @@
 	<div class="password-display" aria-live="polite" aria-atomic="true">
 		{#if password}
 			<div class="password-level">
-				<div class="tiny">{tierJokes[level]} / {version}</div>
-
-				<div class="segments" id="segments" aria-hidden="true">
-					<i class="segment" class:on={level > 0}></i>
-					<i class="segment" class:on={level > 1}></i>
-					<i class="segment" class:on={level > 2}></i>
+				<div class="tiny">
+					<!--{'> ' + tierJokes[level] + '_'}-->
+					<div class="segments" id="segments" aria-hidden="true">
+						<i class="segment" class:on={level > 0}></i>
+						<i class="segment" class:on={level > 1}></i>
+						<i class="segment" class:on={level > 2}></i>
+					</div>
 				</div>
+				<div class="version">v{version}</div>
 			</div>
 
 			<!--	<div class="password-level">
@@ -210,6 +212,17 @@
 		min-width: 0;
 	}
 
+	.tiny {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-small);
+	}
+
+	.version {
+		color: var(--color-muted);
+		font-size: var(--font-size-small);
+	}
+
 	.password-display {
 		display: flex;
 		flex-direction: column;
@@ -218,7 +231,6 @@
 		background: var(--color-text);
 		color: var(--color-surface);
 		border-radius: var(--radius-medium);
-		text-box: cap alphabetical;
 	}
 
 	.password {
@@ -247,13 +259,15 @@
 		align-items: center;
 	}
 	.segment {
-		width: 14px;
-		height: 6px;
-		border-radius: 2px;
+		width: 16px;
+		height: 8px;
+		border-radius: 1px;
+		border: 1px solid var(--color-muted);
 		background: var(--color-muted);
 		transition: background 0.15s;
 	}
 	.segment.on {
+		border-color: var(--color-secondary);
 		background: var(--color-secondary);
 	}
 

@@ -43,9 +43,8 @@
 
 			<PasswordGenerator />
 
+			<MessageBubble />
 			<footer>
-				<MessageBubble />
-
 				<p>
 					designed and developed by
 					<a target="_blank" href="https://nabholz.work">Lukas Nabholz</a>.
@@ -136,7 +135,9 @@
 		line-height: 1.4;
 	}
 
-	footer p {
+	footer {
+		padding-block-start: var(--spacing-medium);
+		border-top: 2px dashed #bdb7a8;
 		color: var(--color-muted);
 		text-align: center;
 		font-size: var(--font-size-caption);
