@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '../styles/style.css';
-	import favicon from '#lib/assets/favicon.svg';
 	import type { LayoutProps } from './$types';
-	import UpdateToast from '#lib/components/UpdateToast.svelte';
 
 	let { children }: LayoutProps = $props();
 
@@ -27,7 +25,7 @@
 	<meta name="theme-color" content="#fdc800" />
 	<meta name="color-scheme" content="light" />
 
-	<link rel="icon" type="image/svg+xml" href={favicon} />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="manifest" href="/manifest.webmanifest" />
 	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 
@@ -50,4 +48,3 @@
 </svelte:head>
 
 {@render children()}
-<UpdateToast />

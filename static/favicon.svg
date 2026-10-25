@@ -7,7 +7,6 @@
 	clip-rule="evenodd"
 	viewBox="0 0 32 32"
 >
-	<path fill="none" d="M0 0h32v32H0z" />
 	<clipPath id="a">
 		<path d="M0 0h32v32H0z" />
 	</clipPath>

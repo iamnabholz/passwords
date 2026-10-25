@@ -11,6 +11,11 @@ type Note = {
 	lowpass?: number;
 };
 
+type PrintOptions = {
+	characterCount?: number;
+	characterDelay?: number;
+};
+
 const ACTION_PATTERNS = [
 	[329.63, 493.88],
 	[392, 523.25],
@@ -43,18 +48,23 @@ function randomBetween(min: number, max: number) {
 	return min + Math.random() * (max - min);
 }
 
-function getNotes(effect: SoundEffect): Note[] {
+function getNotes(effect: SoundEffect, printOptions?: PrintOptions): Note[] {
 	if (effect === 'generate') return GENERATE_NOTES;
 	if (effect === 'beep') return BEEP_NOTES;
 
 	if (effect === 'print') {
-		return Array.from({ length: 25 }, (_, index): Note => {
+		const characterCount = Math.max(1, Math.floor(printOptions?.characterCount ?? 25));
+		const characterDelay = Math.max(1, printOptions?.characterDelay ?? 40) / 1000;
+
+		return Array.from({ length: characterCount }, (_, index): Note => {
 			const accented = index % 5 === 0;
+			const duration = Math.min(accented ? 0.025 : 0.015, characterDelay);
 
 			return {
 				pitch: (index % 2 === 0 ? 180 : 320) + randomBetween(-20, 20),
-				start: index * 0.04 + randomBetween(0, 0.006),
-				duration: accented ? 0.025 : 0.015,
+				// Each sound ends when its corresponding character appears.
+				start: Math.max(0, (index + 1) * characterDelay - duration),
+				duration,
 				wave: 'square',
 				level: accented ? 0.4 : randomBetween(0.2, 0.3),
 				lowpass: 1400
@@ -79,7 +89,7 @@ function getNotes(effect: SoundEffect): Note[] {
 	}));
 }
 
-export async function playSound(effect: SoundEffect) {
+export async function playSound(effect: SoundEffect, printOptions?: PrintOptions) {
 	if (typeof window === 'undefined') return;
 
 	try {
@@ -98,10 +108,10 @@ export async function playSound(effect: SoundEffect) {
 		// Vary the whole effect together so the notes retain their character.
 		const detune = randomBetween(-6, 6);
 		const volumeScale = randomBetween(0.95, 1.05);
-		const timingScale = randomBetween(0.97, 1.03);
+		const timingScale = effect === 'print' ? 1 : randomBetween(0.97, 1.03);
 		const now = context.currentTime;
 
-		for (const note of getNotes(effect)) {
+		for (const note of getNotes(effect, printOptions)) {
 			const start = now + note.start * timingScale;
 			const duration = note.duration * timingScale;
 			const level = SOUND_VOLUME * note.level * volumeScale;

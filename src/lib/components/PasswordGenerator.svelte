@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { playSound, disposeSounds } from '#lib/sounds.ts';
+	import { triggerMessage } from '#lib/state.svelte.ts';
 	import { generatePassword, type PasswordLevel } from '#lib/password.ts';
 	import { version } from '../../../package.json';
 
@@ -14,7 +15,6 @@
 	};
 
 	let copied = $state(false);
-	let copyError = $state('');
 	let generatePressed = $state(false);
 	let copyPressed = $state(false);
 
@@ -22,10 +22,10 @@
 	let copyAttempt = 0;
 
 	function makeItWorse() {
-		let next = generatePassword();
+		let next = generatePassword(level);
 
 		while (next.password === password) {
-			next = generatePassword();
+			next = generatePassword(level);
 		}
 
 		password = next.password;
@@ -34,11 +34,17 @@
 		copyAttempt += 1;
 		clearTimeout(copyTimer);
 		copied = false;
-		copyError = '';
+	}
+
+	function cycleLevel() {
+		level = (level === 3 ? 1 : level + 1) as PasswordLevel;
+		triggerMessage('security');
+		void playSound('beep');
 	}
 
 	function generateWithSound() {
 		makeItWorse();
+		if (Math.random() < 0.1) triggerMessage('generation');
 		void playSound('generate');
 	}
 
@@ -47,7 +53,6 @@
 
 		clearTimeout(copyTimer);
 		copied = false;
-		copyError = '';
 
 		try {
 			await navigator.clipboard.writeText(password);
@@ -55,13 +60,15 @@
 			if (attempt !== copyAttempt) return;
 
 			copied = true;
+			if (Math.random() < 0.35) triggerMessage('copy');
 			void playSound('action');
 
 			copyTimer = setTimeout(() => (copied = false), 1800);
 		} catch {
 			if (attempt !== copyAttempt) return;
 
-			copyError = "Couldn't copy. Select the password to copy it manually.";
+			const error = "Couldn't copy. Select the password to copy it manually.";
+			triggerMessage('copyError', error);
 		}
 	}
 
@@ -136,24 +143,29 @@
 
 <div class="password-section">
 	<div class="password-display" aria-live="polite" aria-atomic="true">
-		{#if password}
-			<div class="password-level">
-				<div class="tiny">
-					<!--{'> ' + tierJokes[level] + '_'}-->
-					<div class="segments" id="segments" aria-hidden="true">
-						<i class="segment" class:on={level > 0}></i>
-						<i class="segment" class:on={level > 1}></i>
-						<i class="segment" class:on={level > 2}></i>
-					</div>
-				</div>
-				<div class="version">v{version}</div>
+		<div class="password-level">
+			<div class="version">
+				<span>{tierJokes[level]}</span>
+				<br />
+				<span>GEN v{version}</span>
 			</div>
 
-			<!--	<div class="password-level">
-				<span>GENERATOR v0.1 · {wordCount} words</span>
-				<span>{tierJokes[level]}</span>
-				</div>-->
-		{/if}
+			<div class="tiny">
+				<button
+					type="button"
+					class="level-control"
+					onclick={cycleLevel}
+					aria-label={`Security level ${level} of 3. Click to select the next level`}
+					title="Change security level"
+				>
+					<span class="segments" aria-hidden="true">
+						<span class="segment" class:on={level >= 1} class:current={level === 1}>1</span>
+						<span class="segment" class:on={level >= 2} class:current={level === 2}>2</span>
+						<span class="segment" class:on={level >= 3} class:current={level === 3}>3</span>
+					</span>
+				</button>
+			</div>
+		</div>
 
 		<span class="sr-only">Generated password: </span>
 
@@ -198,10 +210,6 @@
 	<p class="sr-only" role="status">
 		{copied ? 'Password copied to clipboard.' : ''}
 	</p>
-
-	{#if copyError}
-		<p class="copy-error" role="alert">{copyError}error according to this</p>
-	{/if}
 </div>
 
 <style>
@@ -210,12 +218,6 @@
 		flex-direction: column;
 		gap: var(--spacing-medium);
 		min-width: 0;
-	}
-
-	.tiny {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-small);
 	}
 
 	.version {
@@ -253,22 +255,41 @@
 		text-transform: uppercase;
 	}
 
+	.level-control {
+		background: none;
+		border: none;
+		display: inline-flex;
+		cursor: pointer;
+		touch-action: manipulation;
+		transition: transform var(--transition-fast) ease-out;
+	}
+
 	.segments {
 		display: flex;
-		gap: 6px;
-		align-items: center;
+		gap: 0.12rem;
 	}
+
 	.segment {
-		width: 16px;
-		height: 8px;
-		border-radius: 1px;
-		border: 1px solid var(--color-muted);
-		background: var(--color-muted);
-		transition: background 0.15s;
+		display: grid;
+		width: 2rem;
+		height: 2rem;
+		place-items: center;
+		background: var(--color-surface);
+		color: transparent;
+		border: var(--border-width) solid var(--color-text);
+		border-radius: var(--radius-small);
+		font-size: var(--font-size-tiny);
+		font-weight: 700;
+		line-height: 1;
+		transition: background-color var(--transition-fast) ease-out;
 	}
+
 	.segment.on {
-		border-color: var(--color-secondary);
 		background: var(--color-secondary);
+	}
+
+	.segment.current {
+		color: var(--color-text);
 	}
 
 	.password::selection {
@@ -354,11 +375,6 @@
 	.actions button:disabled {
 		opacity: 0.6;
 		cursor: wait;
-	}
-
-	.copy-error {
-		font-size: var(--font-size-tiny);
-		line-height: var(--line-height);
 	}
 
 	.sr-only {

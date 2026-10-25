@@ -1,4 +1,5 @@
-import { passwordWords, passphraseWords } from './password-words.ts';
+import { WORDS } from './dictionary/words';
+import { BAD_WORDS } from './dictionary/bad-words';
 
 const substitutions: Record<string, readonly string[]> = {
 	a: ['4', '@', '*', '#'],
@@ -116,20 +117,20 @@ export type GeneratedPassword = {
 	wordCount: 2 | 4 | 8;
 };
 
-const levels = [
-	{ level: 1, wordCount: 2 }
-	//{ level: 2, wordCount: 4 },
-	//{ level: 3, wordCount: 8 }
-] as const;
+const levels: { level: PasswordLevel; wordCount: 2 | 4 | 8 }[] = [
+	{ level: 1, wordCount: 2 },
+	{ level: 2, wordCount: 4 },
+	{ level: 3, wordCount: 8 }
+];
 
-export function generatePassword(): GeneratedPassword {
-	const { level, wordCount } = pick(levels);
+export function generatePassword(requestedLevel: PasswordLevel = 1): GeneratedPassword {
+	const { level, wordCount } =
+		levels.find((option) => option.level === requestedLevel) ?? levels[0];
 
-	// Every tier starts with one guaranteed password word.
-	const words: string[] = [pick(passwordWords)];
+	const words: string[] = [pick(BAD_WORDS)];
 
 	while (words.length < wordCount) {
-		const pool: readonly string[] = randomInt(2) === 0 ? passwordWords : passphraseWords;
+		const pool: readonly string[] = randomInt(2) === 0 ? BAD_WORDS : WORDS;
 
 		const available = pool.filter((word) => !words.includes(word));
 		words.push(pick(available));
