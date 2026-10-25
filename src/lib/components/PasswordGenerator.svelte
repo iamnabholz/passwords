@@ -8,12 +8,6 @@
 	let password = $state('');
 	let level = $state<PasswordLevel>(1);
 
-	const tierJokes: Record<PasswordLevel, string> = {
-		1: 'SECURITY BY VIBES',
-		2: 'NOW WITH EXTRA PARANOIA',
-		3: 'YOUR KEYBOARD NEEDS A BREAK'
-	};
-
 	let copied = $state(false);
 	let generatePressed = $state(false);
 	let copyPressed = $state(false);
@@ -145,11 +139,8 @@
 	<div class="password-display" aria-live="polite" aria-atomic="true">
 		<div class="password-level">
 			<div class="version">
-				<span>{tierJokes[level]}</span>
-				<br />
-				<span>GEN v{version}</span>
+				GEN v{version}
 			</div>
-
 			<div class="tiny">
 				<button
 					type="button"
@@ -271,8 +262,8 @@
 
 	.segment {
 		display: grid;
-		width: 2rem;
-		height: 2rem;
+		width: 3rem;
+		height: 1.8rem;
 		place-items: center;
 		background: var(--color-surface);
 		color: transparent;

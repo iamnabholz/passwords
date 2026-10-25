@@ -3,6 +3,8 @@
 	import SecurityBadge from '#lib/components/SecurityBadge.svelte';
 	import PasswordGenerator from '#lib/components/PasswordGenerator.svelte';
 	import MessageBubble from '#lib/components/MessageBubble.svelte';
+
+	import wordmark from '#lib/content/wordmark.svg?url';
 </script>
 
 <div class="password-app">
@@ -15,26 +17,14 @@
 			<header>
 				<div class="title-row">
 					<h1 id="title" aria-label="Passwords">
-						<span class="scribbled-letter"
-							>p<svg
-								class="letter-scribble"
-								viewBox="0 0 100 140"
-								preserveAspectRatio="none"
-								aria-hidden="true"
-								focusable="false"
-							>
-								<path
-									d="
-										M12 40 Q45 28 86 38
-										L14 54 L88 47
-										L10 69 L91 58
-										L12 84 L88 72
-										L9 98 L91 86
-										L48 110
-									"
-								/>
-							</svg></span
-						>asswords.
+						<img
+							class="wordmark"
+							src={wordmark}
+							alt=""
+							aria-hidden="true"
+							width="514"
+							height="88"
+						/>
 					</h1>
 				</div>
 
@@ -99,35 +89,16 @@
 		margin-bottom: var(--spacing-medium);
 	}
 
-	h1 {
-		font-family: var(--font-heading);
-		font-size: clamp(3rem, 10vw, 5rem);
-		font-weight: 900;
-		line-height: 0.9;
-		letter-spacing: -0.075em;
+	.title-row h1 {
+		width: 100%;
+		min-width: 0;
 	}
 
-	.scribbled-letter {
-		position: relative;
-		display: inline-block;
-		isolation: isolate;
-	}
-
-	.letter-scribble {
-		position: absolute;
-		top: -0.02em;
-		left: -0.06em;
-		z-index: 1;
-		width: calc(100% + 0.12em);
-		max-width: none;
-		height: 1.12em;
-		overflow: visible;
-		fill: none;
-		stroke: var(--color-secondary);
-		stroke-width: 7;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-		pointer-events: none;
+	.wordmark {
+		display: block;
+		width: clamp(17.5rem, 58.4vw, 29.2rem);
+		max-width: 100%;
+		height: auto;
 	}
 
 	.subtitle {
